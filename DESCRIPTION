@@ -1,7 +1,7 @@
 Package: remiod
 Type: Package
 Title: Reference-Based Multiple Imputation for Ordinal/Binary Response
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: c(person("Ying", "Liu", role = c("aut")),
              person("Tony", "Wang", email="xwang@imedacs.com", role = c("aut", "cre"),
                 comment = c(ORCID="0000-0002-6760-5456")))
@@ -14,20 +14,19 @@ URL: https://github.com/xsswang/remiod
 RoxygenNote: 7.1.2
 LazyData: true
 Imports: JointAI, rjags, coda, foreach, data.table, future, doFuture,
-        mathjaxr, survival, ggplot2, ordinal, progressr, Matrix,
-        mcmcse, reshape2
+        mathjaxr, survival, ggplot2, ordinal, progressr, Matrix, mcmcse
 SystemRequirements: JAGS (http://mcmc-jags.sourceforge.net/)
-Suggests: knitr, rmarkdown, bookdown, ggpubr, testthat (>= 3.0.0),
-        spelling
-VignetteBuilder: knitr
+Suggests: knitr, rmarkdown, bookdown, R.rsp, ggpubr, testthat (>=
+        3.0.0), spelling
+VignetteBuilder: R.rsp
 Encoding: UTF-8
 Config/testthat/edition: 3
 Language: en-US
 Depends: R (>= 2.10)
 NeedsCompilation: no
-Packaged: 2022-03-11 00:35:57 UTC; iMED
+Packaged: 2022-09-05 17:01:45 UTC; iMED
 Author: Ying Liu [aut],
   Tony Wang [aut, cre] (<https://orcid.org/0000-0002-6760-5456>)
 Maintainer: Tony Wang <xwang@imedacs.com>
 Repository: CRAN
-Date/Publication: 2022-03-14 08:50:02 UTC
+Date/Publication: 2022-09-05 17:30:02 UTC

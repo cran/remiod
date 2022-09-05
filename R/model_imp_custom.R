@@ -142,7 +142,7 @@
 
 
 model_imp_custom <- function(formula = NULL, fixed = NULL, data, random = NULL,
-                      family = NULL, df_basehaz = NULL,
+                      trtvar = NULL, family = NULL, df_basehaz = NULL,
                       rd_vcov = "blockdiag",
                       n.chains = 3, n.adapt = 100, n.iter = 0, thin = 1,
                       monitor_params = c(analysis_main = TRUE), auxvars = NULL,
@@ -193,7 +193,7 @@ model_imp_custom <- function(formula = NULL, fixed = NULL, data, random = NULL,
   # * divide matrices ----------------------------------------------------------
   Mlist <- divide_matrices_custom(data, fixed, analysis_type = analysis_type,
                            random = random, models = models, auxvars = auxvars,
-                           timevar = timevar, no_model = no_model,
+                           timevar = timevar, no_model = no_model, trtvar = trtvar,
                            model_order = model_order, ord_cov_dummy = ord_cov_dummy,
                            scale_vars = scale_vars, refcats = refcats,
                            nonprop = nonprop, rev = rev,
@@ -231,7 +231,7 @@ model_imp_custom <- function(formula = NULL, fixed = NULL, data, random = NULL,
 
   if (!file.exists(modelfile) || (file.exists(modelfile) &
                                   attr(modelfile, "overwrite") == TRUE)) {
-    write_model(info_list = info_list, Mlist = Mlist, modelfile = modelfile)
+      write_model(info_list = info_list, Mlist = Mlist, modelfile = modelfile)
   }
 
   # initial values -------------------------------------------------------------
@@ -286,7 +286,7 @@ model_imp_custom <- function(formula = NULL, fixed = NULL, data, random = NULL,
 
   t1 <- Sys.time()
 
-  if (n.iter > 0 & class(mcmc) != "mcmc.list")
+  if (n.iter > 0 & !inherits(mcmc, "mcmc.list"))
     warnmsg("There is no mcmc sample. Something went wrong.")
 
   # post processing ------------------------------------------------------------
@@ -379,7 +379,7 @@ model_imp_custom <- function(formula = NULL, fixed = NULL, data, random = NULL,
 
 #'
 #'
-glm_imp_custom <- function(formula, family, data,
+glm_imp_custom <- function(formula, family, data, trtvar = NULL,
                     n.chains = 3, n.adapt = 100, n.iter = 0, thin = 1,
                     monitor_params = c(analysis_main = TRUE), auxvars = NULL,
                     refcats = NULL,
@@ -403,7 +403,7 @@ glm_imp_custom <- function(formula, family, data,
 
 #'
 #'
-clm_imp_custom <- function(formula, data,
+clm_imp_custom <- function(formula, data, trtvar = NULL,
                     n.chains = 3, n.adapt = 100, n.iter = 0, thin = 1,
                     monitor_params = c(analysis_main = TRUE), auxvars = NULL,
                     refcats = NULL, nonprop = NULL, rev = NULL,
@@ -419,4 +419,24 @@ clm_imp_custom <- function(formula, data,
 
   do.call(model_imp_custom, arglist)
 }
+
+
+opm_imp_custom <- function(formula, data, trtvar = NULL,
+                           n.chains = 3, n.adapt = 100, n.iter = 0, thin = 1,
+                           monitor_params = c(analysis_main = TRUE), auxvars = NULL,
+                           refcats = NULL, nonprop = NULL, rev = NULL,
+                           models = NULL, no_model = NULL, model_order = NULL,
+                           shrinkage = FALSE, ppc = TRUE, seed = NULL, inits = NULL,
+                           warn = TRUE, mess = TRUE, ord_cov_dummy = TRUE, ...) {
+
+  if (missing(formula)) errormsg("No model formula specified.")
+
+  arglist <- prep_arglist(analysis_type = "opm",
+                          formals = formals(), call = match.call(),
+                          sframe = sys.frame(sys.nframe()))
+
+  do.call(model_imp_custom, arglist)
+}
+
+
 

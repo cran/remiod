@@ -1,12 +1,23 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# remiod: Reference-based Controlled Multiple Imputation of Longitudinal Binary and Ordinal Outcomes with non-ignorable missingness
+# <span style="color: blue;">remiod</span>: Reference-based Multiple Imputation of Longitudinal Binary and Ordinal Outcomes with non-ignorable missingness
+
+<!-- badges: start -->
+
+[![CRAN
+Status](https://www.r-pkg.org/badges/version/remiod)](https://CRAN.R-project.org/package=remiod)
+[![CRAN
+Downloads](https://cranlogs.r-pkg.org/badges/remiod)](https://cran.r-project.org/package=remiod)
+[![GPL-3.0](https://img.shields.io/github/license/xsswang/remiod?logo=GNU&logoColor=FFFFFF&style=flat-square)](https://cran.r-project.org/package=remiod)
+[![R build
+status](https://github.com/xsswang/remiod/workflows/R-CMD-check/badge.svg)](https://github.com/xsswang/remiod/actions)
+<!-- badges: end -->
 
 The package **remiod** provides functionality to perform controlled
 multiple imputation of binary and ordinal response in the Bayesian
 framework. Implemented are (generalized) linear regression models for
-binary data and cumulative logistic models for ordered categorical data
+binary data and cumulative logistic models / ordered probit models for ordered categorical data
 (Wang and Liu 2022). It is also possible to fit multiple models of mixed
 types simultaneously. Missing values in (if present) will be imputed
 automatically.
@@ -24,7 +35,14 @@ to summarize and visualize results.
 
 ## Installation
 
-you can install **remiod** from GitHub:
+**remiod** Can be from
+[CRAN](https://cran.r-project.org/package=remiod):
+
+``` r
+install.packages("remiod")
+```
+
+Or, it can be installed from GitHub:
 
 ``` r
 # install.packages("remotes")
@@ -38,15 +56,18 @@ remotes::install_github("xsswang/remiod")
 ``` r
 remiod                      #processing data and implementing MCMC sampling
 extract_MIdata              #extract imputed data sets
+miAnalyze                   #Perform analyses using imputed data and pool results
 ```
 
-Currently, methods **remiod** implements include missing at random ,
-jump-to-reference , copy reference , and delta adjustment . For ,
-argument should follow to specify a numerical values used in delta
-adjustment
+Currently, methods **remiod** implements include missing at random
+(`MAR`), jump-to-reference (`J2R`), copy reference (`CR`), and delta
+adjustment (`delta`). For `method = "delta"`, argument `delta` should
+follow to specify a numerical values used in delta adjustment. These
+methods can be requested through `extract_MIdata()`, and imputed
+datasets can be analyzed using `miAnalyze()`.
 
-Functions `summary()`, `coef()`, and `mcmclot()` provide a summary of
-the posterior distribution and its visualization.
+Functions `summary()`, `coef()`, and `mcmcplot()` provide a summary of
+the posterior distribution under MAR and its visualization.
 
 ## Minimal Example
 
@@ -59,7 +80,14 @@ test = remiod(formula = y6 ~ tx + y0 + y1 + y3, data = schizow,
               n.iter = 100, thin = 2, warn = FALSE, seed = 1234)
 
 extdt = extract_MIdata(object=test, method="J2R",mi.setting=NULL, M=10, minspace=2)
+result = miAnalyze(y6 ~ y0 + tx, data = extdt, pool = TRUE)
 ```
+
+## Support
+
+For any help with regards to using the package or if you find a bug
+please create a [GitHub
+issue](https://github.com/xsswang/remiod/issues).
 
 ## Reference
 

@@ -5,6 +5,7 @@
 #' onto each other (i.e., long format; optionally including the original,
 #' incomplete data).\cr
 #'
+#' @inheritParams commParams
 #' @param object an object of class JointAI
 #' @param treatment the variable name of treatment. Reference level of treatment should be coded as 0.
 #' @param method a method for obtaining multiple-imputed dataset. Options
@@ -32,8 +33,8 @@
 #'
 #'
 get_MI_RB <- function(object, treatment, method=c("MAR","J2R","CR","delta"), delta=0,
-                      exclude_chains=NULL, start=NULL, end=NULL, seed=NULL,
-                      thin=NULL, subset=FALSE, include=TRUE, mess=TRUE, ...)
+                      exclude_chains=NULL, start=NULL, end=NULL, seed=NULL, thin=NULL,
+                      subset=FALSE, include=TRUE, ord_cov_dummy=TRUE, mess=TRUE, ...)
   {
   if(!missing(method) & length(method)>1) stop("Only one 'method' allowed.")
   method <- match.arg(method)
@@ -61,6 +62,7 @@ get_MI_RB <- function(object, treatment, method=c("MAR","J2R","CR","delta"), del
 
   # get a summary of the relevant characteristics of the imputed variables
   varinfo <- lapply(object$info_list[vars], function(x) {
+    #if (x$modeltype == 'opm') x$modeltype == 'clm'
     data.frame(varname = x$varname,
                modeltype = x$modeltype,
                family = ifelse(!is.null(x$family), x$family, NA),
@@ -68,11 +70,17 @@ get_MI_RB <- function(object, treatment, method=c("MAR","J2R","CR","delta"), del
   })
 
   if (varinfo[[1]]$modeltype == 'clm'){
-      mcUpdateFun = switch(method,
-                           'MAR' = prep_MCMC,
-                           'J2R' = clm_MI_J2R,
-                           'CR' = clm_MI_CR,
-                           'delta' = clm_MI_delta)
+    mcUpdateFun = switch(method,
+                         'MAR' = prep_MCMC,
+                         'J2R' = clm_MI_J2R,
+                         'CR' = clm_MI_CR,
+                         'delta' = clm_MI_delta)
+  } else if (varinfo[[1]]$modeltype == 'opm') {
+    mcUpdateFun = switch(method,
+                         'MAR' = prep_MCMC,
+                         'J2R' = opm_MI_J2R,
+                         'CR' = opm_MI_CR,
+                         'delta' = opm_MI_delta)
   } else {
     mcUpdateFun = switch(method,
                          'MAR' = prep_MCMC,
@@ -84,7 +92,7 @@ get_MI_RB <- function(object, treatment, method=c("MAR","J2R","CR","delta"), del
   MCMC = mcUpdateFun(object, treatment=treatment, delta=delta, seed = seed,
                      start = start, end = end, thin = thin,
                      subset = subset, exclude_chains = exclude_chains,
-                     mess = mess)
+                     ord_cov_dummy=ord_cov_dummy, mess = mess)
 
   # prepare a list of copies of the original data
   df_list <- list()
@@ -156,7 +164,7 @@ get_MI_RB <- function(object, treatment, method=c("MAR","J2R","CR","delta"), del
   }
 
   # build dataset --------------------------------------------------------------
-  imp_df <- data.table::rbindlist(df_list) #do.call(rbind, df_list)
+  imp_df <- data.table::rbindlist(df_list)
 
   return(imp_df)
 }
