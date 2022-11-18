@@ -19,7 +19,7 @@ multiple imputation of binary and ordinal response in the Bayesian
 framework. Implemented are (generalized) linear regression models for
 binary data and cumulative logistic models / ordered probit models for ordered categorical data
 (Wang and Liu 2022). It is also possible to fit multiple models of mixed
-types simultaneously. Missing values in (if present) will be imputed
+types simultaneously. Missing values in variables(if present) will be imputed
 automatically.
 
 **remiod** has two algorithmic backend. One is
@@ -113,7 +113,7 @@ of Longitudinal Binary and Ordinal Outcomes with Nonignorable Dropout.”
 
 <div id="ref-wang2022" class="csl-entry">
 
-Wang, T, and Y Liu. 2022. “Remiod: Reference-Based Controlled Multiple
+Wang, T, and Liu, Y. 2022. “Remiod: Reference-Based Controlled Multiple
 Imputation of Longitudinal Binary and Ordinal Outcomes with
 Non-Ignorable Missingness.” *arXiv* 2203.02771.
 <https://arxiv.org/pdf/2203.02771>.
